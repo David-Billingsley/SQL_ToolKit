@@ -30,7 +30,7 @@ func sql_send(query string, server string, database string) {
 
 }
 
-func (t *Data) SQLFileread(fpath string, server string, database string) {
+func (t *Data) SQL_File_Import(fpath string, server string, database string) {
 	entries, err := os.ReadDir(fpath)
 	if err != nil {
 		log.Fatal(err)
