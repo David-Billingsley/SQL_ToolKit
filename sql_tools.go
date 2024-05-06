@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strigns"
+	"strings"
 
 	_ "github.com/denisenkom/go-mssqldb"
 )
@@ -43,7 +43,7 @@ func (t *Data) SQL_File_Import(fpath string, server string, database string) boo
 		log.Fatal(err)
 	}
 	for _, e := range entries {
-		if strigns.HasSuffix(e.Name(), ".sql") {
+		if strings.HasSuffix(e.Name(), ".sql") {
 			query, err := os.ReadFile(fmt.Sprintf("%s%s", fpath, e.Name()))
 
 			if err != nil {
