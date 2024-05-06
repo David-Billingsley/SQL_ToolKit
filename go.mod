@@ -1,4 +1,4 @@
-module github.com/David-Billingsley/SQL_Import
+module github.com/David-Billingsley/SQL_ToolKit
 
 go 1.21.5
 
