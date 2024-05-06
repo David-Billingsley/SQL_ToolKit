@@ -14,6 +14,9 @@ type Data struct {
 	AllowedFileTypes []string
 }
 
+// #region: SQL Insert
+// This function takes the server string and database string from the SQL_File_Import and then also takes the file from the
+// File path file reads the whole file as a string and send to the server
 func sql_send(query string, server string, database string) {
 	ConnStringQA := fmt.Sprintf("server=%s;user id=;database=%s;", server, database)
 
@@ -30,6 +33,8 @@ func sql_send(query string, server string, database string) {
 
 }
 
+// #region: SQL File Find
+// This function takes and a file path and searches that path for files to read and pass into the sql_send function.
 func (t *Data) SQL_File_Import(fpath string, server string, database string) {
 	entries, err := os.ReadDir(fpath)
 	if err != nil {
