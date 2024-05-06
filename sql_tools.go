@@ -35,7 +35,7 @@ func sql_send(query string, server string, database string) {
 }
 
 // #region: SQL File Find
-// This function takes and a file path and searches that path for files to read and pass into the sql_send function.
+// This function takes a file path and searches that path for files to read and pass into the sql_send function.
 func (t *Data) SQL_File_Import(fpath string, server string, database string) (map[string]string, bool) {
 	// Creates a map to hold the fileanems found below.
 	var filefound = make(map[string]string)
