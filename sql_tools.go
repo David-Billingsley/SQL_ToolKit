@@ -42,7 +42,9 @@ func (t *Data) SQL_File_Import(fpath string, server string, database string) boo
 	if err != nil {
 		log.Fatal(err)
 	}
+	// Loops over the files in the directory search above
 	for _, e := range entries {
+		// If the file name as .sql as a suffix run the import else fail
 		if strings.HasSuffix(e.Name(), ".sql") {
 			query, err := os.ReadFile(fmt.Sprintf("%s%s", fpath, e.Name()))
 
@@ -55,9 +57,11 @@ func (t *Data) SQL_File_Import(fpath string, server string, database string) boo
 		}
 	}
 
+	// If the number of files imported is not equal to zero then return true to let the user know it has been completed.
 	if count != 0 {
 		return true
 	} else {
+		// If equal to zero return false to let the user know of its failure.
 		return false
 	}
 }
