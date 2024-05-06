@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strigns"
 
 	_ "github.com/denisenkom/go-mssqldb"
 )
@@ -35,19 +36,28 @@ func sql_send(query string, server string, database string) {
 
 // #region: SQL File Find
 // This function takes and a file path and searches that path for files to read and pass into the sql_send function.
-func (t *Data) SQL_File_Import(fpath string, server string, database string) {
+func (t *Data) SQL_File_Import(fpath string, server string, database string) bool {
 	entries, err := os.ReadDir(fpath)
+	count := 0
 	if err != nil {
 		log.Fatal(err)
 	}
 	for _, e := range entries {
-		fmt.Println(e.Name())
-		query, err := os.ReadFile(fmt.Sprintf("%s%s", fpath, e.Name()))
+		if strigns.HasSuffix(e.Name(), ".sql") {
+			query, err := os.ReadFile(fmt.Sprintf("%s%s", fpath, e.Name()))
 
-		if err != nil {
-			log.Fatal("File not read")
+			if err != nil {
+				log.Fatal("File not read")
+			}
+			count = count + 1
+
+			sql_send(string(query), server, database)
 		}
+	}
 
-		sql_send(string(query), server, database)
+	if count != 0 {
+		return true
+	} else {
+		return false
 	}
 }
