@@ -36,7 +36,9 @@ func sql_send(query string, server string, database string) {
 
 // #region: SQL File Find
 // This function takes and a file path and searches that path for files to read and pass into the sql_send function.
-func (t *Data) SQL_File_Import(fpath string, server string, database string) bool {
+func (t *Data) SQL_File_Import(fpath string, server string, database string) (map[string]string, bool) {
+	// Creates a map to hold the fileanems found below.
+	var filefound = make(map[string]string)
 	entries, err := os.ReadDir(fpath)
 	count := 0
 	if err != nil {
@@ -53,15 +55,17 @@ func (t *Data) SQL_File_Import(fpath string, server string, database string) boo
 			}
 			count = count + 1
 
+			filefound[string(count)] = e.Name()
+
 			sql_send(string(query), server, database)
 		}
 	}
 
-	// If the number of files imported is not equal to zero then return true to let the user know it has been completed.
+	// If the number of files imported is not equal to zero then return filenames and true to let the user know it has been completed.
 	if count != 0 {
-		return true
+		return filefound, true
 	} else {
-		// If equal to zero return false to let the user know of its failure.
-		return false
+		// If equal to zero return with filenames and false to let the user know of its failure.
+		return filefound, false
 	}
 }
