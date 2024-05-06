@@ -77,3 +77,60 @@ func (t *Data) SQL_File_Import(fpath string, server string, database string, use
 		return filefound, false
 	}
 }
+
+// #region: Get Coloumn Info
+// This function returns the coloumn names and their associated datatypes
+func (t *Data) Get_Coloumn_Info(server string, database string, user string, pass string, table string) (map[string]string, string) {
+	var ConnString string
+	// Checks for user to be passed, if no user is passed then generate the windows auth string
+	if len(user) > 0 {
+		ConnString = fmt.Sprintf("server=%s;user id=;database=%s;", server, database)
+	} else {
+		ConnString = fmt.Sprintf("server=%s;user id=%s;password=%s;database=%s;", server, user, pass, database)
+	}
+	conn, err := sql.Open("sqlserver", ConnString)
+	if err != nil {
+		log.Fatal("Open connection failed:", err.Error())
+	}
+
+	defer conn.Close()
+
+	// Get the tables coloumns and datatypes
+	query := " SELECT COLUMN_NAME, DATA_TYPE " +
+		" FROM INFORMATION_SCHEMA.COLUMNS " +
+		" WHERE TABLE_NAME = @p1 "
+
+	rows, err := conn.Query(query, table)
+	if err != nil {
+		fmt.Println("Error reading records: ", err.Error())
+	}
+	defer rows.Close()
+
+	// creates a map for the results
+	var dtypes = make(map[string]string)
+	count := 0
+
+	// Loops over the returned table results and generates a map to be returned
+	for rows.Next() {
+		var name string
+		var datatype string
+
+		err := rows.Scan(&name, &datatype)
+		if err != nil {
+			fmt.Println("Error reading rows: " + err.Error())
+		}
+
+		dtypes[name] = datatype
+
+		count++
+	}
+
+	// If the row is zero then send error that the table could not be found.  If the row number is not equal to zero
+	// send the results with a blank return for error
+	if count != 0 {
+		return dtypes, ""
+	} else {
+		return dtypes, fmt.Sprintf("Couldn't find table %s", table)
+	}
+
+}
