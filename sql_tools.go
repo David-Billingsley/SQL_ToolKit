@@ -55,6 +55,7 @@ func (t *Data) SQL_File_Import(fpath string, server string, database string) (ma
 			}
 			count = count + 1
 
+			// Insert filename with an index as the key
 			filefound[fmt.Sprintf("%d", count)] = e.Name()
 
 			sql_send(string(query), server, database)
