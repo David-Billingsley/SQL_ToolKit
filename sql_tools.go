@@ -79,8 +79,8 @@ func (t *Data) SQL_File_Import(fpath string, server string, database string, use
 }
 
 // #region: Get Coloumn Info
-// This function returns the coloumn names and their associated datatypes
-func (t *Data) Get_Coloumn_Info(server string, database string, user string, pass string, table string) (map[string]string, string) {
+// This function returns the column names and their associated datatypes
+func (t *Data) Get_Column_Info(server string, database string, user string, pass string, table string) (map[string]string, string) {
 	var ConnString string
 	// Checks for user to be passed, if no user is passed then generate the windows auth string
 	if len(user) > 0 {
