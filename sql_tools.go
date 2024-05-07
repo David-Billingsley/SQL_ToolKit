@@ -134,3 +134,57 @@ func (t *Data) Get_Coloumn_Info(server string, database string, user string, pas
 	}
 
 }
+
+// #region: Get Tables
+// This function will get all the tables in the particular database
+func (t *Data) Get_Table_Names(server string, database string, user string, pass string) (map[string]string, string) {
+	var ConnString string
+	// Checks for user to be passed, if no user is passed then generate the windows auth string
+	if len(user) > 0 {
+		ConnString = fmt.Sprintf("server=%s;user id=;database=%s;", server, database)
+	} else {
+		ConnString = fmt.Sprintf("server=%s;user id=%s;password=%s;database=%s;", server, user, pass, database)
+	}
+	conn, err := sql.Open("sqlserver", ConnString)
+	if err != nil {
+		log.Fatal("Open connection failed:", err.Error())
+	}
+
+	defer conn.Close()
+
+	// Get the tables coloumns and datatypes
+	query := " Select TABLE_NAME from schema_name.table_name "
+
+	rows, err := conn.Query(query)
+	if err != nil {
+		fmt.Println("Error reading records: ", err.Error())
+	}
+	defer rows.Close()
+
+	// creates a map for the results
+	var tablelist = make(map[string]string)
+	count := 0
+
+	// Loops over the returned results and generates a map to be returned
+	for rows.Next() {
+		var tablename string
+
+		err := rows.Scan(&tablename)
+		if err != nil {
+			fmt.Println("Error reading rows: " + err.Error())
+		}
+
+		tablelist[fmt.Sprintf("%d", count)] = tablename
+
+		count++
+	}
+
+	// If the row is zero then send error that the tables could not be found.  If the row number is not equal to zero
+	// send the results with a blank return for error
+	if count != 0 {
+		return tablelist, ""
+	} else {
+		return tablelist, fmt.Sprintf("Couldn't find tables in %s", database)
+	}
+
+}
