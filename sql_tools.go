@@ -153,9 +153,9 @@ func (t *Data) Get_Table_Names(server string, database string, user string, pass
 	defer conn.Close()
 
 	// Get the tables coloumns and datatypes
-	query := " Select TABLE_NAME from schema_name.table_name "
+	query := " Select * from @p1.schema_name.table_name "
 
-	rows, err := conn.Query(query)
+	rows, err := conn.Query(query, database)
 	if err != nil {
 		fmt.Println("Error reading records: ", err.Error())
 	}
