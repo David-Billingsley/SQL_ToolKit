@@ -44,7 +44,7 @@ func sql_send(query string, server string, database string, user string, pass st
 // #region: SQL File Find
 // This function takes a file path and searches that path for files to read and pass into the sql_send function.
 func (t *Data) SQL_File_Import(fpath string, server string, database string, user string, pass string) (map[string]string, bool) {
-	// Creates a map to hold the fileanems found below.
+	// Creates a map to hold the filenames found below.
 	var filefound = make(map[string]string)
 	entries, err := os.ReadDir(fpath)
 	count := 0
@@ -78,8 +78,8 @@ func (t *Data) SQL_File_Import(fpath string, server string, database string, use
 	}
 }
 
-// #region: Get Coloumn Info
-// This function returns the column names and their associated datatypes
+// #region: Get Column Info
+// This function returns the column names and their associated data types
 func (t *Data) Get_Column_Info(server string, database string, user string, pass string, table string) (map[string]string, string) {
 	var ConnString string
 	// Checks for user to be passed, if no user is passed then generate the windows auth string
@@ -95,7 +95,7 @@ func (t *Data) Get_Column_Info(server string, database string, user string, pass
 
 	defer conn.Close()
 
-	// Get the tables coloumns and datatypes
+	// Get the tables columns and data types
 	query := " SELECT COLUMN_NAME, DATA_TYPE " +
 		" FROM INFORMATION_SCHEMA.COLUMNS " +
 		" WHERE TABLE_NAME = @p1 "
@@ -152,7 +152,7 @@ func (t *Data) Get_Table_Names(server string, database string, user string, pass
 
 	defer conn.Close()
 
-	// Get the tables coloumns and datatypes
+	// Get the tables columns and data types
 	query := " Select * from @p1.schema_name.table_name "
 
 	rows, err := conn.Query(query, database)
